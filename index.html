@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmailService Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #007BFF;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            background: #eee;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .note {
+            background: #ffffe0;
+            border: 1px solid #ffeb3b;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EmailService Documentation</h1>
+
+        <h2>Overview</h2>
+        <p>
+            The <code>EmailService</code> class simplifies sending emails using <code>nodemailer</code>. 
+            It allows configuring email details dynamically, such as subject, content, and attachments.
+            Environment variables are used for secure credential management.
+        </p>
+
+        <h2>Requirements</h2>
+        <ul>
+            <li><strong>Environment Variables:</strong> Set the following variables in your <code>.env</code> file:</li>
+        </ul>
+        <pre>
+MAIL_HOST="smtp.gmail.com"
+MAIL_PORT=587
+MAIL_USER="info@amplifiedamino.us"
+MAIL_PASSWORD="your_password"
+        </pre>
+        <ul>
+            <li><strong>Dependencies:</strong> Install required modules:</li>
+        </ul>
+        <pre>npm install nodemailer dotenv</pre>
+
+        <h2>Class: <code>EmailService</code></h2>
+
+        <h3>Constructor</h3>
+        <p>Initializes the <code>EmailService</code> instance with default values and sets up a transporter for sending emails.</p>
+        <pre>new EmailService();</pre>
+
+        <h3>Methods</h3>
+        <h4><code>emailDetails(subject, htmlContent, attachments = [])</code></h4>
+        <p>Configures the email's subject, content, and optional attachments.</p>
+        <ul>
+            <li><strong>Parameters:</strong></li>
+            <ul>
+                <li><code>subject</code> (string): The subject of the email.</li>
+                <li><code>htmlContent</code> (string): The HTML content for the email body.</li>
+                <li><code>attachments</code> (Array): Optional array of attachment objects.</li>
+            </ul>
+        </ul>
+
+        <h4><code>sendEmail(to)</code></h4>
+        <p>Sends the configured email to the specified recipient.</p>
+        <ul>
+            <li><strong>Parameters:</strong></li>
+            <ul>
+                <li><code>to</code> (string): The recipient's email address.</li>
+            </ul>
+            <li><strong>Returns:</strong></li>
+            <ul>
+                <li>Logs the <code>messageId</code> upon successful delivery.</li>
+                <li>Logs an error message if sending fails.</li>
+            </ul>
+        </ul>
+
+        <h2>Usage Example</h2>
+        <h3>1. Import and Initialize</h3>
+        <pre>
+import EmailService from './emailService.js';
+
+const emailService = new EmailService();
+        </pre>
+
+        <h3>2. Define Email Details</h3>
+        <pre>
+const subject = 'Welcome to Amplified Amino!';
+
+const emailContent = `
+  &lt;html&gt;
+    &lt;body&gt;
+      &lt;h1&gt;Welcome to Amplified Amino!&lt;/h1&gt;
+      &lt;p&gt;We're thrilled to have you join us.&lt;/p&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+`;
+
+const attachments = [
+    {
+        filename: 'example.pdf', 
+        path: './attachments/example.pdf',
+    },
+    {
+        filename: 'image.png',
+        path: './attachments/image.png',
+    },
+];
+
+emailService.emailDetails(subject, emailContent, attachments);
+        </pre>
+
+        <h3>3. Send the Email</h3>
+        <pre>
+(async () => {
+    await emailService.sendEmail('client@example.com');
+})();
+        </pre>
+
+        <h2>Attachment Configuration</h2>
+        <p>The <code>attachments</code> array supports various options:</p>
+        <ul>
+            <li><code>filename</code>: Name of the file as displayed in the email.</li>
+            <li><code>path</code>: Path to the local file.</li>
+            <li><code>content</code>: File content as a <code>Buffer</code> or string (optional).</li>
+            <li><code>contentType</code>: MIME type of the file (e.g., <code>application/pdf</code> or <code>image/png</code>).</li>
+        </ul>
+
+        <h3>Example: Dynamic Buffer Attachment</h3>
+        <pre>
+attachments.push({
+    filename: 'dynamic.txt',
+    content: Buffer.from('This file was generated dynamically.'),
+    contentType: 'text/plain',
+});
+        </pre>
+
+        <h2>Example Output</h2>
+        <h3>Success</h3>
+        <pre>Message sent: &lt;b658f8dcbf9c1e9a662b2c59c6a4e67e@domain.com&gt;</pre>
+
+        <h3>Error</h3>
+        <pre>Error sending email: Error: Invalid login - 535 Authentication failed</pre>
+    </div>
+</body>
+</html>
